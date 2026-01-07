@@ -32,31 +32,47 @@ namespace App.Controllers
 
     bool IsValidPhone(string Phone)
     {
-      if (Phone.Length != 11) return false;
-      if (!Phone.All(char.IsDigit)) return false;
       string[] EgyptionPrefix = { "010", "011", "012", "015" };
-      foreach (var item in Phone)
+      if (Phone.Length == 11 && Phone.All(char.IsDigit))
       {
-        if (Phone.StartsWith(item))
+        foreach (var item in EgyptionPrefix)
         {
-          return true;
+          if (Phone.StartsWith(item))
+            return true;
         }
       }
       return false;
     }
 
+    bool IsValidPassword(string Password)
+    {
+      if (Password.Length > 8 && Password.Any(char.IsUpper) && Password.Any(char.IsLower) && Password.Any(char.IsDigit) && Password.Any(ch => !char.IsLetterOrDigit(ch)))
+      {
+        return true;
+      }
+      return false;
+    }
+
+
     [HttpPost("SingUp")]
     public IActionResult AddUser(SingUpModel user)
     {
-
-
+      // 1️⃣ Check email 
+      if (string.IsNullOrWhiteSpace(user.email))
+        return BadRequest("Email is Requird");
       if (!IsValidEmail(user.email))
         return BadRequest("Invalid email format");
 
+      // 2️⃣ Check password
+      if (string.IsNullOrWhiteSpace(user.passowrd))
+        return BadRequest("Password is Requird");
+      if(!IsValidPassword(user.passowrd))
+        return BadRequest("Invalid Password format");
+  
+      // 2️⃣ Check phone
       if (string.IsNullOrWhiteSpace(user.phone))
         return BadRequest("Phone is required");
-
-      if (IsValidPhone(user.phone))
+      if (!IsValidPhone(user.phone))
         return BadRequest("Invalid phone format");
 
       try
