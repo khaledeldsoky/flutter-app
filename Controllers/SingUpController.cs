@@ -32,10 +32,9 @@ namespace App.Controllers
 
     bool IsValidPhone(string Phone)
     {
-      if (string.IsNullOrWhiteSpace(Phone)) return false;
       if (Phone.Length != 11) return false;
       if (!Phone.All(char.IsDigit)) return false;
-      string[] EgyptionPrefix = {"010","011","012","015"};
+      string[] EgyptionPrefix = { "010", "011", "012", "015" };
       foreach (var item in Phone)
       {
         if (Phone.StartsWith(item))
@@ -43,17 +42,23 @@ namespace App.Controllers
           return true;
         }
       }
-      return false; 
+      return false;
     }
 
     [HttpPost("SingUp")]
     public IActionResult AddUser(SingUpModel user)
     {
+
+
       if (!IsValidEmail(user.email))
         return BadRequest("Invalid email format");
-        
+
+      if (string.IsNullOrWhiteSpace(user.phone))
+        return BadRequest("Phone is required");
+
       if (IsValidPhone(user.phone))
         return BadRequest("Invalid phone format");
+
       try
       {
         _signUpServices.AddUser(user);

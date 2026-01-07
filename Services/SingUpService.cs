@@ -49,7 +49,6 @@ namespace App.Services
       insercommand.ExecuteNonQuery();
     }
 
-
     public List<SingUpModel> GetAllUsers()
     {
       SingUpModel user = new SingUpModel();
