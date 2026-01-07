@@ -16,7 +16,7 @@ namespace App.Controllers
       _signUpServices = signUpServices;
     }
 
-    [HttpPost("singup")]
+    [HttpPost("SingUp")]
     public IActionResult AddUser(SingUpModel user)
     {
       try
@@ -30,7 +30,7 @@ namespace App.Controllers
       }
     }
 
-    [HttpGet]
+    [HttpGet("GetAllUsers")]
     public IActionResult GetAllUsers()
     {
       var users = _signUpServices.GetAllUsers();
