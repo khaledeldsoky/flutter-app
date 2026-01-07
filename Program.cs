@@ -1,3 +1,6 @@
+
+
+using App.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddScoped<SingUpServices>();
 
 var app = builder.Build();
 
