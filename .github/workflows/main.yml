@@ -22,3 +22,14 @@ jobs:
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapi:latest .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapi:latest
+
+    - name: Deploy to VM
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_HOST }}
+        username: ${{ secrets.VM_USER }}
+        key: ${{ secrets.VM_SSH_KEY }}
+        script: |
+          cd /opt/myapp
+          docker-compose pull
+          docker-compose up -d
