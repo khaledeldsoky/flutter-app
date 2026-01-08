@@ -8,14 +8,15 @@ namespace App.Services
 {
   public class SingUpServices
   {
+    
+    List<SingUpModel> users = new List<SingUpModel>();
     private readonly string _connectionString;
-
     public SingUpServices(IConfiguration configuration)
     {
       _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
 
-    List<SingUpModel> users = new List<SingUpModel>();
+    
 
     public void AddUser(SingUpModel user)
     {
@@ -69,6 +70,24 @@ namespace App.Services
       }
 
       return users;
+    }
+
+    public bool LogIn(string Email , string Password)
+    {
+      using MySqlConnection connection = new MySqlConnection(_connectionString);
+      connection.Open();
+
+      string sql = "SELECT password FROM signup WHERE email = @e";   
+
+      using MySqlCommand command = new MySqlCommand(sql,connection);
+
+      command.Parameters.AddWithValue("@e",Email);
+
+      var HashedPassword = command.ExecuteScalar().ToString();
+
+      bool Success = BCrypt.Net.BCrypt.Verify(Password,HashedPassword);
+
+      return Success;
     }
   }
 }

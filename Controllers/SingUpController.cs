@@ -66,9 +66,9 @@ namespace App.Controllers
       // 2️⃣ Check password
       if (string.IsNullOrWhiteSpace(user.passowrd))
         return BadRequest("Password is Requird");
-      if(!IsValidPassword(user.passowrd))
+      if (!IsValidPassword(user.passowrd))
         return BadRequest("Invalid Password format");
-  
+
       // 2️⃣ Check phone
       if (string.IsNullOrWhiteSpace(user.phone))
         return BadRequest("Phone is required");
@@ -91,6 +91,17 @@ namespace App.Controllers
     {
       var users = _signUpServices.GetAllUsers();
       return Ok(users);
+    }
+
+    [HttpPost("LogIn")]
+    public IActionResult LogIn(string Email, string Password)
+    {
+      var SingIn = _signUpServices.LogIn(Email, Password);
+
+      if (SingIn)
+        return Ok("Login Success");
+      
+      return BadRequest("Email or password is incorrect");
     }
   }
 }
