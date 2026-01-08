@@ -94,13 +94,13 @@ namespace App.Controllers
     }
 
     [HttpPost("LogIn")]
-    public IActionResult LogIn(string Email, string Password)
+    public IActionResult LogIn([FromForm] string Email, [FromForm] string Password)
     {
       var SingIn = _signUpServices.LogIn(Email, Password);
 
       if (SingIn)
         return Ok("Login Success");
-      
+
       return BadRequest("Email or password is incorrect");
     }
   }
