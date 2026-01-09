@@ -9,7 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddScoped<SingUpServices>();
+builder.Services.AddScoped<AuthServices>();
 
 var app = builder.Build();
 

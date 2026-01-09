@@ -35,10 +35,11 @@ namespace App.Services
 
 
       // 2️⃣ Hash password
-      string hashedPassword = BCrypt.Net.BCrypt.HashPassword(register.Password);
+      
 
       // 3️⃣ Insert user
       string inserSql = "insert into  users (username , email , password  ,phone )" + "Values(@n,@e,@pass,@ph)";
+      string hashedPassword = BCrypt.Net.BCrypt.HashPassword(register.Password);
 
       using MySqlCommand insercommand = new MySqlCommand(inserSql, connection);
       insercommand.Parameters.AddWithValue("@n", register.Username);
@@ -73,6 +74,7 @@ namespace App.Services
         UserDto.Phone = dataReader.GetString("phone");
         UsersDto.Add(UserDto);
       }
+      
       return UsersDto;
     }
 

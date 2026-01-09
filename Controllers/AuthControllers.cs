@@ -7,7 +7,7 @@ using System.Net.Mail;
 namespace App.Controllers
 {
   [ApiController]
-  [Route("api/auth")]
+  [Route("api/auth/")]
   public class AuthControllers : ControllerBase
   {
     private readonly AuthServices _authServices;
@@ -95,6 +95,7 @@ namespace App.Controllers
     public IActionResult GetAllUsers()
     {
       var users = _authServices.GetAllUsers();
+
       return Ok(users);
     }
 
