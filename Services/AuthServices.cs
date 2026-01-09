@@ -16,8 +16,6 @@ namespace App.Services
       _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
 
-
-
     public bool Register(RegisterRequest register)
     {
       using MySqlConnection connection = new MySqlConnection(_connectionString);
@@ -59,7 +57,7 @@ namespace App.Services
       using MySqlConnection connection = new MySqlConnection(_connectionString);
       connection.Open();
 
-      string sql = "SELECT email , username , PASSWORD FROM users";
+      string sql = "SELECT email , username , phone FROM users";
 
       using MySqlCommand command = new MySqlCommand(sql, connection);
 
