@@ -7,14 +7,14 @@ using System.Net.Mail;
 namespace App.Controllers
 {
   [ApiController]
-  [Route("api/")]
-  public class SingUpControllers : ControllerBase
+  [Route("api/auth")]
+  public class AuthControllers : ControllerBase
   {
-    private readonly SingUpServices _signUpServices;
+    private readonly AuthServices _authServices;
 
-    public SingUpControllers(SingUpServices signUpServices)
+    public AuthControllers(AuthServices authServices)
     {
-      _signUpServices = signUpServices;
+      _authServices = authServices;
     }
 
     bool IsValidEmail(string Mail)
@@ -54,31 +54,36 @@ namespace App.Controllers
     }
 
 
-    [HttpPost("SingUp")]
-    public IActionResult AddUser(SingUpModel user)
+    [HttpPost("Register")]
+    public IActionResult Register(RegisterRequest register)
     {
+
       // 1️⃣ Check email 
-      if (string.IsNullOrWhiteSpace(user.email))
+      if (string.IsNullOrWhiteSpace(register.Email))
         return BadRequest("Email is Requird");
-      if (!IsValidEmail(user.email))
+      if (!IsValidEmail(register.Email))
         return BadRequest("Invalid email format");
+      if (!_authServices.Register(register))
+        return BadRequest("Email is Exist");
 
       // 2️⃣ Check password
-      if (string.IsNullOrWhiteSpace(user.passowrd))
+      if (string.IsNullOrWhiteSpace(register.Password))
         return BadRequest("Password is Requird");
-      if (!IsValidPassword(user.passowrd))
+      if (!IsValidPassword(register.Password))
         return BadRequest("Invalid Password format");
 
       // 2️⃣ Check phone
-      if (string.IsNullOrWhiteSpace(user.phone))
+      if (string.IsNullOrWhiteSpace(register.Phone))
         return BadRequest("Phone is required");
-      if (!IsValidPhone(user.phone))
+      if (!IsValidPhone(register.Phone))
         return BadRequest("Invalid phone format");
+      
+
 
       try
       {
-        _signUpServices.AddUser(user);
-        return Ok("The user is add success");
+        _authServices.Register(register);
+        return Ok("User created successfully");
       }
       catch (Exception ex)
       {
@@ -89,16 +94,25 @@ namespace App.Controllers
     [HttpGet("GetAllUsers")]
     public IActionResult GetAllUsers()
     {
-      var users = _signUpServices.GetAllUsers();
+      var users = _authServices.GetAllUsers();
       return Ok(users);
     }
 
     [HttpPost("LogIn")]
-    public IActionResult LogIn([FromForm] string Email, [FromForm] string Password)
+    public IActionResult LogIn(LoginRequest login)
     {
-      var SingIn = _signUpServices.LogIn(Email, Password);
+      
+      // 1️⃣ Check email 
+      if (string.IsNullOrWhiteSpace(login.Email))
+        return BadRequest("Email is Requird");
 
-      if (SingIn)
+      // 2️⃣ Check password
+      if (string.IsNullOrWhiteSpace(login.Password))
+        return BadRequest("Password is Requird");
+
+      var LogIn = _authServices.LogIn(login);
+
+      if (LogIn)
         return Ok("Login Success");
 
       return BadRequest("Email or password is incorrect");
