@@ -125,8 +125,8 @@ namespace App.Controllers
       return BadRequest("Email or password is incorrect");
     }
 
-    [HttpPost("ChangePassword")]
-    public IActionResult ChangePassword(ChangePassword changePassword)
+    [HttpPost("NewPassword")]
+    public IActionResult NewPassword(ChangePassword changePassword)
     {
       // 1️⃣ Check email 
       if (string.IsNullOrWhiteSpace(changePassword.Email))
