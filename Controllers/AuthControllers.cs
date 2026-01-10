@@ -77,7 +77,7 @@ namespace App.Controllers
         return BadRequest("Phone is required");
       if (!IsValidPhone(register.Phone))
         return BadRequest("Invalid phone format");
-      
+
 
 
       try
@@ -102,7 +102,7 @@ namespace App.Controllers
     [HttpPost("LogIn")]
     public IActionResult LogIn(LoginRequest login)
     {
-      
+
       // 1️⃣ Check email 
       if (string.IsNullOrWhiteSpace(login.Email))
         return BadRequest("Email is Requird");
@@ -118,5 +118,31 @@ namespace App.Controllers
 
       return BadRequest("Email or password is incorrect");
     }
+
+    [HttpPost("ChangePassword")]
+    public IActionResult ChangePassword(ChangePassword changePassword)
+    {
+      // 1️⃣ Check email 
+      if (string.IsNullOrWhiteSpace(changePassword.Email))
+        return BadRequest("Email is Required");
+
+      // 2️⃣ Check password
+      if (string.IsNullOrWhiteSpace(changePassword.OldPassword))
+        return BadRequest("Password is Required");
+
+      // 2️⃣ Check password old pass
+      if (string.IsNullOrWhiteSpace(changePassword.NewPassword))
+        return BadRequest("New Password is Required");
+      if (!IsValidPassword(changePassword.NewPassword))
+        return BadRequest("Invalid Password format");
+
+
+      if (_authServices.ChangePassword(changePassword))
+        return Ok("Password changed successfully");
+
+
+      return Unauthorized("Email or password is incorrect");
+    }
+
   }
 }

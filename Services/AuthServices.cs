@@ -9,7 +9,6 @@ namespace App.Services
   public class AuthServices
   {
 
-
     private readonly string _connectionString;
     public AuthServices(IConfiguration configuration)
     {
@@ -29,11 +28,11 @@ namespace App.Services
 
       int exists = Convert.ToInt32(commandEmail.ExecuteScalar());
       if (exists > 0)
-        return false ;
+        return false;
 
 
       // 2️⃣ Hash password
-      
+
 
       // 3️⃣ Insert user
       string inserSql = "insert into  users (username , email , password  ,phone )" + "Values(@n,@e,@pass,@ph)";
@@ -72,7 +71,7 @@ namespace App.Services
         UserDto.Phone = dataReader.GetString("phone");
         UsersDto.Add(UserDto);
       }
-      
+
       return UsersDto;
     }
 
@@ -89,7 +88,7 @@ namespace App.Services
 
       var result = command.ExecuteScalar();
 
-      if (result ==  null)
+      if (result == null)
         return false;
 
       var HashedPassword = result.ToString();
@@ -97,6 +96,40 @@ namespace App.Services
       bool Success = BCrypt.Net.BCrypt.Verify(login.Password, HashedPassword);
 
       return Success;
+    }
+
+    public bool ChangePassword(ChangePassword changePassword)
+    {
+      using MySqlConnection connection = new MySqlConnection(_connectionString);
+      connection.Open();
+
+      string sql = "SELECT password FROM users WHERE email = @e";
+
+      using MySqlCommand command = new MySqlCommand(sql, connection);
+
+      command.Parameters.AddWithValue("@e", changePassword.Email);
+
+      var result = command.ExecuteScalar();
+
+      if (result == null)
+        return false;
+
+      var HashedPassword = result.ToString();
+
+      bool Success = BCrypt.Net.BCrypt.Verify(changePassword.OldPassword, HashedPassword);
+
+      if (!Success)
+        return false;
+
+      string UpdatePassword = "UPDATE users SET password = @newP WHERE email = @e";
+      using MySqlCommand UpdatePasswordCommand = new MySqlCommand(UpdatePassword, connection);
+      UpdatePasswordCommand.ExecuteNonQuery();
+      string NewHashedPassword = BCrypt.Net.BCrypt.HashPassword(changePassword.NewPassword);
+
+      UpdatePasswordCommand.Parameters.AddWithValue("@e", changePassword.Email);
+      UpdatePasswordCommand.Parameters.AddWithValue("@newP", NewHashedPassword);
+
+      return true;
     }
   }
 }
