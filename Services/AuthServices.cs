@@ -123,13 +123,14 @@ namespace App.Services
 
       string UpdatePassword = "UPDATE users SET password = @newP WHERE email = @e";
       using MySqlCommand UpdatePasswordCommand = new MySqlCommand(UpdatePassword, connection);
-      UpdatePasswordCommand.ExecuteNonQuery();
+      
       string NewHashedPassword = BCrypt.Net.BCrypt.HashPassword(changePassword.NewPassword);
 
       UpdatePasswordCommand.Parameters.AddWithValue("@e", changePassword.Email);
       UpdatePasswordCommand.Parameters.AddWithValue("@newP", NewHashedPassword);
+     int rows = UpdatePasswordCommand.ExecuteNonQuery();
 
-      return true;
+      return rows > 0;
     }
   }
 }
