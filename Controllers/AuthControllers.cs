@@ -147,7 +147,7 @@ namespace App.Controllers
         return Ok("Password changed successfully");
 
 
-      return Unauthorized("Email or password is incorrect");
+      return BadRequest("Email or password is incorrect");
     }
 
   }
